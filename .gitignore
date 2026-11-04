@@ -1,0 +1,16 @@
+# Dependencias e builds
+node_modules/
+dist/
+harness/dist-*/
+.firebase/
+
+# Variaveis de ambiente (chaves do Firebase) - NUNCA versionar
+.env
+.env.*
+!.env.example
+
+# Logs e sistema
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
