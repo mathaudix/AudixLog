@@ -1,0 +1,13 @@
+/* Cabecalho da tabela: fundo continuo em todas as celulas (inclusive ACOES). */
+.nf-table thead tr,
+.nf-table thead th,
+.nf-table thead td {
+  background: rgb(var(--color-bg)) !important;
+  background-color: rgb(var(--color-bg)) !important;
+  box-shadow: none;
+}
+.nf-table thead th { border-bottom: 1px solid rgb(var(--color-border)); }
+.nf-table thead th.col-acoes,
+.nf-table thead th:last-child { background: rgb(var(--color-bg)) !important; }
+.nf-table-shell .nf-table td.col-acoes,
+.nf-table-shell .nf-table td:last-child { background-clip: padding-box; }

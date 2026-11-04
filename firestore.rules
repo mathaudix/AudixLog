@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+    function userDoc(appId) {
+      return get(/databases/$(database)/documents/artifacts/$(appId)/public/data/allowed_users/$(request.auth.uid));
+    }
+    // Perfis antigos (sem status) seguem só o flag ativo. Cadastros novos exigem e-mail verificado.
+    function isActive(appId) {
+      return isSignedIn() && userDoc(appId).data.ativo == true
+        && (request.auth.token.email_verified == true || !('status' in userDoc(appId).data));
+    }
+    function isAdmin(appId) { return isActive(appId) && userDoc(appId).data.role == 'admin'; }
+    function historyNotShrunk() {
+      return !('historico' in resource.data)
+        || (('historico' in request.resource.data)
+          && request.resource.data.historico.size() >= resource.data.historico.size());
+    }
+    match /artifacts/{appId}/public/data/allowed_users/{uid} {
+      allow get: if isSignedIn() && (request.auth.uid == uid || isAdmin(appId));
+      allow list: if isAdmin(appId);
+      allow create: if (isAdmin(appId) && request.resource.data.keys().hasAll(['email', 'nome', 'role', 'ativo'])
+        && request.resource.data.role in ['admin', 'operador'] && request.resource.data.ativo is bool)
+        || (isSignedIn() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['email', 'nome', 'role', 'ativo', 'status', 'criadoEm'])
+          && request.resource.data.ativo == false
+          && request.resource.data.role == 'operador'
+          && request.resource.data.status == 'pendente'
+          && request.resource.data.email == request.auth.token.email
+          && request.resource.data.nome is string
+          && request.resource.data.nome.size() >= 1
+          && request.resource.data.nome.size() <= 60);
+      allow update: if (isAdmin(appId)
+        && (request.auth.uid != uid || (
+          request.resource.data.role == resource.data.role
+          && request.resource.data.ativo == resource.data.ativo
+        ))
+        && request.resource.data.role in ['admin', 'operador']
+        && request.resource.data.ativo is bool
+        && (!('status' in request.resource.data) || request.resource.data.status in ['pendente', 'ativo', 'desativado']))
+        || (isSignedIn() && request.auth.uid == uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nome', 'atualizadoEm'])
+          && request.resource.data.nome is string
+          && request.resource.data.nome.size() >= 1
+          && request.resource.data.nome.size() <= 60);
+      allow delete: if isAdmin(appId) && request.auth.uid != uid;
+    }
+    match /artifacts/{appId}/public/data/nfs/{nfId} {
+      allow read: if isActive(appId);
+      allow create: if isActive(appId);
+      allow update: if isActive(appId) && historyNotShrunk();
+      allow delete: if isAdmin(appId);
+    }
+    match /artifacts/{appId}/public/data/history_nfs/{nfId} {
+      allow read: if isActive(appId);
+      allow create: if isActive(appId);
+      allow update: if isActive(appId) && ('historico' in request.resource.data)
+        && ('historico' in resource.data)
+        && request.resource.data.historico.size() > resource.data.historico.size();
+      allow delete: if false;
+    }
+    match /artifacts/{appId}/public/data/savedLabelsAdvanced/{labelId} {
+      allow read: if isActive(appId);
+      allow create: if isActive(appId)
+        && request.resource.data.createdBy == request.auth.uid;
+      allow update: if isActive(appId)
+        && (isAdmin(appId) || resource.data.get('createdBy', '') == request.auth.uid)
+        && request.resource.data.get('createdBy', '') == resource.data.get('createdBy', '');
+      allow delete: if isActive(appId)
+        && (isAdmin(appId) || resource.data.get('createdBy', '') == request.auth.uid);
+    }
+    match /artifacts/{appId}/public/data/saved_labels/{labelId} {
+      allow read: if isActive(appId);
+      allow create: if isActive(appId) && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isActive(appId)
+        && (isAdmin(appId) || resource.data.createdBy == request.auth.uid);
+    }
+    match /artifacts/{appId}/public/data/cte_state/{docId} {
+      allow read, write: if isActive(appId);
+    }
+    match /artifacts/{appId}/public/data/settings/{settingId} {
+      allow read: if isActive(appId);
+      allow create, update, delete: if isAdmin(appId);
+    }
+    match /artifacts/{appId}/public/data/{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

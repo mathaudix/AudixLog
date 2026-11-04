@@ -1,0 +1,2 @@
+
+  <?xml version="1.0" encoding="ISO-8859-1"?><NFe xmlns="http://www.portalfiscal.inf.br/nfe"><infNFe versao="4.00" Id="NFe35260911222333001445500100000005110000000005"><emit><CNPJ>11222333000155</CNPJ><xNome>FORN ÇÃO LTDA</xNome><IE>999</IE></emit><dest><CNPJ>03790896000148</CNPJ><xNome>LOJA</xNome><enderDest><xMun>CAMPO GRANDE</xMun></enderDest></dest><total><ICMSTot><vNF>1234.56</vNF></ICMSTot></total><transp><vol><pesoB>10.5</pesoB></vol><vol><pesoB>4.5</pesoB></vol></transp></infNFe></NFe>

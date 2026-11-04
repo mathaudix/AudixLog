@@ -1,0 +1,26 @@
+/* Lista de notas cabe na largura da tela, sem rolagem horizontal.
+   Larguras por classe (cabeçalho e corpo usam as mesmas classes), nada de nth-child. */
+.nf-table-scroll { overflow-x: hidden; }
+@media (min-width: 768px) {
+  .nf-table { min-width: 0; width: 100%; table-layout: fixed; }
+  .nf-table th, .nf-table td { min-width: 0; padding-left: 8px; padding-right: 8px; overflow: hidden; }
+  .nf-table .col-check { width: 40px; }
+  .nf-table .col-status { width: 120px; }
+  .nf-table .col-data { width: 118px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .nf-table .col-nf { width: 104px; }
+  .nf-table td.col-nf .nf-number-button { font-weight: 700; }
+  .nf-table td.col-data { font-size: 13px; }
+  .nf-table td { padding-top: 6px; padding-bottom: 6px; }
+  .nf-table .col-fornecedor { width: auto; }
+  .nf-table .col-vol { width: 72px; }
+  .nf-table .col-peso { width: 96px; }
+  .nf-table .col-valor { width: 112px; }
+  .nf-table .col-acoes { width: 168px; white-space: nowrap; }
+  .nf-table .col-fornecedor .nf-supplier { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nf-table .col-fornecedor .nf-branch-badge { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nf-actions { flex-wrap: nowrap; gap: 2px; }
+  .nf-actions button { padding: 4px; }
+}
+@media (min-width: 768px) and (max-width: 1279px) {
+  .nf-table .col-vol, .nf-table .col-peso { display: none; }
+}
