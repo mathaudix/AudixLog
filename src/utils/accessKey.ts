@@ -80,3 +80,10 @@ export function parseAccessKey(raw: string): ParsedAccessKey | null {
     dvValido: accessKeyCheckDigit(key.slice(0, 43)) === Number(dv),
   };
 }
+
+/** Chave de acesso válida: 44 dígitos e dígito verificador correto. */
+export function isValidAccessKey(raw: string): boolean {
+  const key = normalizeAccessKey(raw ?? '');
+  if (!/^\d{44}$/.test(key)) return false;
+  return accessKeyCheckDigit(key.slice(0, 43)) === Number(key.slice(43, 44));
+}

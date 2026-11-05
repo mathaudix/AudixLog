@@ -11,6 +11,36 @@ service cloud.firestore {
         && (request.auth.token.email_verified == true || !('status' in userDoc(appId).data));
     }
     function isAdmin(appId) { return isActive(appId) && userDoc(appId).data.role == 'admin'; }
+    // Campos que o operador pode alterar em uma nota: conferência, volumes, peso, responsável e expedição.
+    // Valor, fornecedor, número da NF e demais dados fiscais são só do admin.
+    function isOperatorNfEdit() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        'statusConferencia', 'volumes', 'peso', 'volumesConferidos', 'pesoConferido',
+        'responsavel', 'status', 'dataExpedicao', 'dataExpedicaoISO', 'historico'
+      ]);
+    }
+    function validNfNumbers(d) {
+      return (!('volumes' in d) || (d.volumes is number && d.volumes >= 0))
+        && (!('peso' in d) || (d.peso is number && d.peso >= 0))
+        && (!('valor' in d) || (d.valor is number && d.valor >= 0))
+        && (!('volumesConferidos' in d) || d.volumesConferidos == null || (d.volumesConferidos is number && d.volumesConferidos >= 0))
+        && (!('pesoConferido' in d) || d.pesoConferido == null || (d.pesoConferido is number && d.pesoConferido >= 0))
+        && (!('statusConferencia' in d) || d.statusConferencia in ['pendente', 'conferida', 'divergente'])
+        && (!('status' in d) || d.status in ['recebido', 'expedido']);
+    }
+    function validNfFields(d) {
+      return d.numero is string && d.numero.size() >= 1 && d.numero.size() <= 20
+        && d.fornecedor is string && d.fornecedor.size() <= 200
+        && d.volumes is number && d.volumes >= 0
+        && d.peso is number && d.peso >= 0
+        && d.valor is number && d.valor >= 0
+        && d.statusConferencia in ['pendente', 'conferida', 'divergente']
+        && d.status in ['recebido', 'expedido']
+        && (!('chaveAcesso' in d) || d.chaveAcesso == null || (d.chaveAcesso is string && d.chaveAcesso.size() <= 44))
+        && (!('responsavel' in d) || d.responsavel == null || (d.responsavel is string && d.responsavel.size() <= 80))
+        && (!('obs' in d) || d.obs == null || (d.obs is string && d.obs.size() <= 2000))
+        && (!('foto' in d) || d.foto == null || (d.foto is string && d.foto.size() <= 700000));
+    }
     function historyNotShrunk() {
       return !('historico' in resource.data)
         || (('historico' in request.resource.data)
@@ -47,8 +77,9 @@ service cloud.firestore {
     }
     match /artifacts/{appId}/public/data/nfs/{nfId} {
       allow read: if isActive(appId);
-      allow create: if isActive(appId);
-      allow update: if isActive(appId) && historyNotShrunk();
+      allow create: if isActive(appId) && validNfFields(request.resource.data);
+      allow update: if isActive(appId) && historyNotShrunk() && validNfNumbers(request.resource.data)
+        && (isAdmin(appId) || isOperatorNfEdit());
       allow delete: if isAdmin(appId);
     }
     match /artifacts/{appId}/public/data/history_nfs/{nfId} {

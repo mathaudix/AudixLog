@@ -3,6 +3,7 @@ import { DEFAULT_WINDOW_DAYS, isInWindow, mergeNfsById, windowCutoff } from '../
 import { auth } from './firebase';
 import { db, appId } from './firebase';
 import { toNfUpdatePayload } from './nfPayload';
+import { isValidAccessKey } from '../utils/accessKey';
 import type { HistoryAction, HistoryChange, HistoryEntry, NotaFiscal, Result, StatusConferencia } from '../types';
 
 type NfPayload = Omit<NotaFiscal, 'id'>;
@@ -70,7 +71,7 @@ export function subscribeNfs(next: (nfs: NotaFiscal[]) => void, fail: (error: Er
 }
 /** Consulta pontual de duplicidade por chave de acesso (independe da janela carregada). */
 export async function findNfByChave(chave: string): Promise<NotaFiscal | null> {
-  if (!chave) return null;
+  if (!isValidAccessKey(chave)) return null;
   const snap = await getDocs(query(nfsCollection(), where('chaveAcesso', '==', chave), limit(1)));
   return snap.docs[0] ? mapNf(snap.docs[0].id, snap.docs[0].data()) : null;
 }
@@ -102,6 +103,11 @@ export async function findOldNfsByTerm(term: string): Promise<OldNfMatch[]> {
   return [...old, ...archived];
 }
 
+/** Campos que o operador pode alterar (espelha firestore.rules). */
+export const OPERATOR_NF_FIELDS = ['statusConferencia', 'volumes', 'peso', 'volumesConferidos', 'pesoConferido', 'responsavel', 'status', 'dataExpedicao', 'dataExpedicaoISO'] as const;
+function pick(source: Record<string, unknown>, keys: readonly string[]): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(source).filter(([key]) => keys.includes(key)));
+}
 export async function createNf(data: NfPayload, action: 'criada' | 'importada' = 'criada'): Promise<Result<string>> {
   try {
     const audit = entry(action);
@@ -109,12 +115,16 @@ export async function createNf(data: NfPayload, action: 'criada' | 'importada' =
     return { ok: true, data: ref.id };
   } catch (cause) { return { ok: false, error: asError(cause) }; }
 }
-export async function updateNf(id: string, data: Partial<NotaFiscal>): Promise<Result<void>> {
+export async function updateNf(id: string, data: Partial<NotaFiscal>, canEditFiscal = true): Promise<Result<void>> {
   try {
-    const payload = toNfUpdatePayload(data as Record<string, unknown>);
     const snapshot = await getDoc(nfDocument(id));
     if (!snapshot.exists()) throw new Error('A nota não existe mais no Firestore.');
-    const changes = diff(snapshot.data(), payload);
+    const current = snapshot.data();
+    // Operador só grava campos de conferência/expedição; o restante vem do documento atual e não é regravado.
+    const source = canEditFiscal ? data as Record<string, unknown> : pick(data as Record<string, unknown>, OPERATOR_NF_FIELDS);
+    const payload = toNfUpdatePayload(source);
+    const changes = diff(current, payload);
+    if (!changes.length) return { ok: true, data: undefined };
     await updateDoc(nfDocument(id), { ...payload, historico: arrayUnion(entry(actionForChanges(changes), changes)) } as UpdateData<DocumentData>);
     return { ok: true, data: undefined };
   } catch (cause) { return { ok: false, error: asError(cause) }; }
@@ -123,15 +133,16 @@ export async function removeNf(id: string): Promise<Result<void>> {
   try { await deleteDoc(nfDocument(id)); return { ok: true, data: undefined }; }
   catch (cause) { return { ok: false, error: asError(cause) }; }
 }
-export async function bulkUpdate(ids: string[], payload: UpdateData<DocumentData>, currentNfs: NotaFiscal[] = []): Promise<Result<void>> {
+export async function bulkUpdate(ids: string[], payload: UpdateData<DocumentData>, currentNfs: NotaFiscal[] = [], canEditFiscal = true): Promise<Result<void>> {
   try {
+    const scoped = (canEditFiscal ? payload : pick(payload as Record<string, unknown>, OPERATOR_NF_FIELDS)) as UpdateData<DocumentData>;
     const indexed = new Map(currentNfs.map(nf => [nf.id, nf]));
     for (let start = 0; start < ids.length; start += 450) {
       const batch = writeBatch(db);
       ids.slice(start, start + 450).forEach(id => {
         const previous = indexed.get(id) as unknown as Record<string, unknown> | undefined;
-        const changes = previous ? diff(previous, payload as Record<string, unknown>) : Object.entries(payload).map(([field, value]) => ({ field, from: '—', to: display(value) }));
-        batch.update(nfDocument(id), { ...payload, historico: arrayUnion(entry(actionForChanges(changes), changes)) });
+        const changes = previous ? diff(previous, scoped as Record<string, unknown>) : Object.entries(scoped).map(([field, value]) => ({ field, from: '—', to: display(value) }));
+        batch.update(nfDocument(id), { ...scoped, historico: arrayUnion(entry(actionForChanges(changes), changes)) });
       });
       await batch.commit();
     }

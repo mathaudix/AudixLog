@@ -12,7 +12,3 @@ audit-*.json
 harness/dist/
 tmp_*.txt
 *.zip
-
-*.tsbuildinfo
-
-*.tsbuildinfo

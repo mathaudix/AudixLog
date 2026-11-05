@@ -106,3 +106,20 @@ Etiquetas 100x30 em duas colunas (bobina de 110 mm de liner, etiquetas de 50 × 
 
 **Calibração:** em **Configurações > Calibração de impressão**, clique em **Imprimir teste de calibração**. A página mostra a moldura de cada etiqueta e uma régua em mm. Se a moldura não encostar na borda da etiqueta, ajuste o **X** do formato 100x30 (2 colunas) em passos de 0,5 mm. O valor fica salvo neste computador.
 
+## v90 — permissões do operador e testes de regras
+
+Operador pode: mudar status de conferência, editar volumes e peso, definir responsável e expedir.
+Só admin pode: editar valor, fornecedor, número da NF, chave e excluir nota.
+
+Passos:
+
+```powershell
+npm install
+npm test
+npm run test:rules
+firebase deploy --only firestore:rules
+npm run deploy
+```
+
+`npm run test:rules` usa o emulador do Firestore e precisa de Java instalado.
+
