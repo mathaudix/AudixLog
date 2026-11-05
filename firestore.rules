@@ -11,13 +11,17 @@ service cloud.firestore {
         && (request.auth.token.email_verified == true || !('status' in userDoc(appId).data));
     }
     function isAdmin(appId) { return isActive(appId) && userDoc(appId).data.role == 'admin'; }
-    // Campos que o operador pode alterar em uma nota: conferência, volumes, peso, responsável e expedição.
-    // Valor, fornecedor, número da NF e demais dados fiscais são só do admin.
+    // Campos que o operador pode alterar em uma nota: conferência, volumes, peso, responsável, expedição, filial e observação.
+    // Valor, fornecedor, número da NF, chave, produtos, foto e demais dados fiscais são só do admin.
     function isOperatorNfEdit() {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
         'statusConferencia', 'volumes', 'peso', 'volumesConferidos', 'pesoConferido',
-        'responsavel', 'status', 'dataExpedicao', 'dataExpedicaoISO', 'historico'
+        'responsavel', 'status', 'dataExpedicao', 'dataExpedicaoISO', 'historico', 'filial', 'obs'
       ]);
+    }
+    function validOperatorText(d) {
+      return (!('filial' in d) || d.filial == null || (d.filial is string && d.filial.size() <= 20))
+        && (!('obs' in d) || d.obs == null || (d.obs is string && d.obs.size() <= 2000));
     }
     function validNfNumbers(d) {
       return (!('volumes' in d) || (d.volumes is number && d.volumes >= 0))
@@ -79,7 +83,7 @@ service cloud.firestore {
       allow read: if isActive(appId);
       allow create: if isActive(appId) && validNfFields(request.resource.data);
       allow update: if isActive(appId) && historyNotShrunk() && validNfNumbers(request.resource.data)
-        && (isAdmin(appId) || isOperatorNfEdit());
+        && (isAdmin(appId) || (isOperatorNfEdit() && validOperatorText(request.resource.data)));
       allow delete: if isAdmin(appId);
     }
     match /artifacts/{appId}/public/data/history_nfs/{nfId} {

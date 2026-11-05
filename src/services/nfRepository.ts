@@ -104,7 +104,7 @@ export async function findOldNfsByTerm(term: string): Promise<OldNfMatch[]> {
 }
 
 /** Campos que o operador pode alterar (espelha firestore.rules). */
-export const OPERATOR_NF_FIELDS = ['statusConferencia', 'volumes', 'peso', 'volumesConferidos', 'pesoConferido', 'responsavel', 'status', 'dataExpedicao', 'dataExpedicaoISO'] as const;
+export const OPERATOR_NF_FIELDS = ['statusConferencia', 'volumes', 'peso', 'volumesConferidos', 'pesoConferido', 'responsavel', 'status', 'dataExpedicao', 'dataExpedicaoISO', 'filial', 'obs'] as const;
 function pick(source: Record<string, unknown>, keys: readonly string[]): Record<string, unknown> {
   return Object.fromEntries(Object.entries(source).filter(([key]) => keys.includes(key)));
 }

@@ -41,6 +41,12 @@ await check('expede nota = permitido', () => assertSucceeds(updateDoc(nfRef(as('
 await check('altera valor = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ valor: 999 }, H('criada', 'editada')))));
 await check('altera fornecedor = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ fornecedor: 'Outro' }, H('criada', 'editada')))));
 await check('altera numero da NF = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ numero: '999' }, H('criada', 'editada')))));
+await check('altera filial = permitido', () => assertSucceeds(updateDoc(nfRef(as('op')), withHistory({ filial: 'L12' }, H('criada', 'editada')))));
+await check('altera obs = permitido', () => assertSucceeds(updateDoc(nfRef(as('op')), withHistory({ obs: 'Caixa amassada' }, H('criada', 'editada')))));
+await check('altera foto = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ foto: 'data:image/png;base64,AAAA' }, H('criada', 'editada')))));
+await check('altera produtos = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ produtos: 'Item X' }, H('criada', 'editada')))));
+await check('obs com tipo invalido (numero) = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ obs: 123 }, H('criada', 'editada')))));
+await check('obs acima do limite = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ obs: 'x'.repeat(2001) }, H('criada', 'editada')))));
 await check('exclui nota = negado', () => assertFails(deleteDoc(nfRef(as('op')))));
 await check('volumes negativo = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ volumes: -1 }, H('criada', 'editada')))));
 await check('volumes texto = negado', () => assertFails(updateDoc(nfRef(as('op')), withHistory({ volumes: 'dez' }, H('criada', 'editada')))));

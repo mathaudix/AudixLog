@@ -108,8 +108,8 @@ Etiquetas 100x30 em duas colunas (bobina de 110 mm de liner, etiquetas de 50 × 
 
 ## v90 — permissões do operador e testes de regras
 
-Operador pode: mudar status de conferência, editar volumes e peso, definir responsável e expedir.
-Só admin pode: editar valor, fornecedor, número da NF, chave e excluir nota.
+Operador pode: mudar status de conferência, editar volumes e peso, definir responsável, editar filial e observação, e expedir.
+Só admin pode: editar valor, fornecedor, número da NF, chave, produtos, foto e excluir nota.
 
 Passos:
 
@@ -123,3 +123,23 @@ npm run deploy
 
 `npm run test:rules` usa o emulador do Firestore e precisa de Java instalado.
 
+
+## v91 — atualização de dependências e segurança
+
+Versão mínima do Node: **20.19** (campo `engines`). O Vite 7 não roda em versões anteriores.
+Java: o `npm run test:rules` agora exige **JDK 21** ou superior (exigência do firebase-tools 15).
+
+Principais versões: firebase 12, Vite 7, @vitejs/plugin-react 5, @firebase/rules-unit-testing 5, firebase-tools 15.
+Nenhuma mudança de comportamento ou visual.
+
+Passos:
+
+```powershell
+npm install
+npm test
+npm run test:rules
+npm run build
+npm run dev
+```
+
+Após o `npm install`, teste login, lista de notas em tempo real, leitura da câmera, impressão, importação de XML e rateio.
