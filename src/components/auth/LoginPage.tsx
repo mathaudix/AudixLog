@@ -48,12 +48,12 @@ export function LoginPage({ onSignUp }: { onSignUp: () => void }) {
     setBusy(false);
   };
 
-  const field = 'w-full rounded-xl border border-white/15 bg-white/5 py-2.5 pl-10 pr-3 text-white placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:bg-white/10 focus:ring-2 focus:ring-blue-500/30';
+  const field = 'w-full rounded-xl border border-white/15 bg-white/5 py-2.5 pl-10 pr-3 text-fg placeholder:text-muted outline-none transition focus:border-blue-500 focus:bg-white/10 focus:ring-2 focus:ring-blue-500/30';
   return <main className="login-shell relative grid min-h-[100dvh] place-items-center overflow-hidden p-4 text-fg lg:grid-cols-2 lg:gap-10 lg:px-16">
     <AuthBackdrop/>
-    <section className="relative z-10 hidden flex-col gap-6 text-white lg:flex">
+    <section className="relative z-10 hidden flex-col gap-6 rounded-3xl bg-[rgb(var(--color-hero))] p-10 text-white lg:flex">
       <Logo variant="mark" size={96}/>
-      <div><h2 className="text-5xl font-extrabold tracking-tight">AudixLog</h2><p className="mt-2 text-lg text-sky-300">{t('auth.brandSubtitle')}</p></div>
+      <div><h2 className="brand-wordmark text-6xl"><span className="brand-audix">Audix</span><span className="brand-log">Log</span></h2><p className="mt-2 text-lg text-sky-300">{t('auth.brandSubtitle')}</p></div>
       <ul className="space-y-3 text-slate-200">
         <li className="flex items-center gap-3"><Truck className="h-5 w-5 text-sky-300"/>{t('auth.featureReceiving')}</li>
         <li className="flex items-center gap-3"><Package className="h-5 w-5 text-sky-300"/>{t('auth.featureVolumes')}</li>
@@ -64,28 +64,28 @@ export function LoginPage({ onSignUp }: { onSignUp: () => void }) {
     <form onSubmit={event => void submit(event)} autoComplete="on" className="relative z-10 w-full max-w-sm lg:justify-self-end space-y-5 rounded-3xl border border-primary/25 bg-surface/90 p-6 text-fg shadow-2xl backdrop-blur-xl sm:p-8">
       <div className="flex flex-col items-center text-center lg:hidden">
         <div className="mb-4 grid h-24 w-24 place-items-center rounded-2xl bg-blue-500/10 shadow-lg ring-1 ring-blue-400/20"><Logo variant="mark" size={72}/></div>
-        <h1 className="text-2xl font-extrabold tracking-tight">AudixLog</h1>
-        <p className="mt-1 text-sm text-sky-300">{t('auth.brandSubtitle')}</p>
-        <p className="mt-3 text-sm text-slate-400">{t('auth.continue')}</p>
+        <h1 className="brand-wordmark on-light text-3xl"><span className="brand-audix">Audix</span><span className="brand-log">Log</span></h1>
+        <p className="mt-1 text-sm text-primary">{t('auth.brandSubtitle')}</p>
+        <p className="mt-3 text-sm text-muted">{t('auth.continue')}</p>
       </div>
       <label className="block text-sm font-semibold">{t('auth.email')}
-        <span className="relative mt-1 block"><Mail className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400"/>
+        <span className="relative mt-1 block"><Mail className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted"/>
           <input type="email" name="email" autoComplete="username" required value={email} onChange={e => setEmail(e.target.value)} className={field}/></span>
       </label>
       <label className="block text-sm font-semibold">{t('auth.credential')}
-        <span className="relative mt-1 block"><Lock className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400"/>
+        <span className="relative mt-1 block"><Lock className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted"/>
           <input type={visible ? 'text' : 'password'} name="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} className={`${field} pr-10`}/>
-          <button type="button" onClick={() => setVisible(v => !v)} aria-label={visible ? t('auth.hidePassword') : t('auth.showPassword')} className="absolute right-2 top-2 rounded-lg p-1.5 text-slate-400 hover:text-white">{visible ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}</button></span>
+          <button type="button" onClick={() => setVisible(v => !v)} aria-label={visible ? t('auth.hidePassword') : t('auth.showPassword')} className="absolute right-2 top-2 rounded-lg p-1.5 text-muted hover:text-fg">{visible ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}</button></span>
       </label>
       <div className="flex items-center justify-between gap-3 text-sm">
-        <label className="flex cursor-pointer items-center gap-2 text-slate-300"><input type="checkbox" checked={keepSignedIn} onChange={e => setKeepSignedIn(e.target.checked)} className="h-4 w-4 accent-blue-600"/>{t('auth.keepSignedIn')}</label>
-        <button type="button" onClick={() => void forgot()} disabled={busy} className="font-semibold text-sky-300 hover:underline disabled:opacity-50">{t('auth.forgotCredential')}</button>
+        <label className="flex cursor-pointer items-center gap-2 text-muted"><input type="checkbox" checked={keepSignedIn} onChange={e => setKeepSignedIn(e.target.checked)} className="h-4 w-4 accent-blue-600"/>{t('auth.keepSignedIn')}</label>
+        <button type="button" onClick={() => void forgot()} disabled={busy} className="font-semibold text-primary hover:underline disabled:opacity-50">{t('auth.forgotCredential')}</button>
       </div>
       {message && <p role="alert" className="rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-200">{message}</p>}
-      {notice && <p role="status" className="rounded-xl bg-blue-500/15 px-3 py-2 text-sm text-sky-200">{notice}</p>}
+      {notice && <p role="status" className="rounded-xl bg-subtle px-3 py-2 text-sm text-brand">{notice}</p>}
       <button type="submit" disabled={busy} className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 font-bold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-700 disabled:opacity-60">{busy && <Loader2 className="h-4 w-4 animate-spin"/>}{t('auth.signIn')}</button>
-      <p className="text-center text-sm text-slate-400"><button type="button" onClick={onSignUp} className="font-semibold text-sky-300 hover:underline">{t('auth.noAccount')}</button></p>
+      <p className="text-center text-sm text-muted"><button type="button" onClick={onSignUp} className="font-semibold text-primary hover:underline">{t('auth.noAccount')}</button></p>
     </form>
-    <p className="absolute bottom-3 left-0 right-0 z-10 text-center text-xs text-slate-500">AudixLog · {t('auth.brandSubtitle')}</p>
+    <p className="absolute bottom-3 left-0 right-0 z-10 text-center text-xs text-tertiary">AudixLog · {t('auth.brandSubtitle')}</p>
   </main>;
 }

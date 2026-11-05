@@ -353,6 +353,7 @@ export const pt = {
       'forkliftHere': 'Usar empilhadeira aqui',
       'tieDown': 'Prender aqui',
       'temperatureLimit': 'Limite de temperatura',
+      'handleCare': 'Manusear com cuidado',
       'truckBox': 'Caminhão-baú',
       'truckTrailer': 'Carreta',
       'van': 'Van',

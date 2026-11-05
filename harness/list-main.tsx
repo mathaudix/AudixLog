@@ -20,7 +20,7 @@ const base = {
 const nfs: NotaFiscal[] = [
   { ...base, id: '1', numero: '10231', fornecedor: 'Fornecedor Alfa Ltda', volumes: 4, peso: 320, valor: 5000, statusConferencia: 'conferida', status: 'recebido', filial: 'L1' },
   { ...base, id: '2', numero: '10232', fornecedor: 'Fornecedor Beta S.A.', volumes: 2, peso: 180, valor: 3000, statusConferencia: 'pendente', status: 'recebido', filial: 'L2' },
-  { ...base, id: '3', numero: '10233', fornecedor: 'Comercial Gama', volumes: 1, peso: 95.5, valor: 2000, statusConferencia: 'divergente', status: 'expedido', filial: 'L3' },
+  { ...base, id: '3', numero: '10233', fornecedor: 'Comercial Gama Distribuidora de Materiais Industriais e Embalagens do Norte Ltda', volumes: 1, peso: 95.5, valor: 2000, statusConferencia: 'divergente', status: 'expedido', filial: 'L3' },
 ];
 
 const noop = () => undefined;

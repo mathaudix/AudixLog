@@ -44,7 +44,7 @@ export function OldNfSearchPanel({ term, loaded, windowDays, onOpen }: Props) {
             <span className="font-semibold">{nf.numero} · {nf.fornecedor}</span>
             <span className="flex items-center gap-2">
               <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">{t('old_search.badge_antiga')}</span>
-              {source === 'arquivada' && <span className="inline-flex items-center gap-1 rounded-full bg-slate-200 px-2 py-0.5 text-xs font-semibold text-fg dark:bg-zinc-700 dark:text-fg"><Archive size={12}/>{t('old_search.badge_arquivada')}</span>}
+              {source === 'arquivada' && <span className="inline-flex items-center gap-1 rounded-full bg-slate-200 px-2 py-0.5 text-xs font-semibold text-fg dark:bg-raised dark:text-fg"><Archive size={12}/>{t('old_search.badge_arquivada')}</span>}
             </span>
           </button>
         </li>)}

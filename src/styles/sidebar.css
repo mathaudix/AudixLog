@@ -25,9 +25,10 @@
 .app-sidebar .nav-item:hover svg { color: rgb(var(--side-fg)); }
 .app-sidebar .nav-item.active,
 .app-sidebar .nav-item.active:hover {
-  background: rgb(var(--side-active)) !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
+  background: rgb(var(--state-active-bg)) !important;
+  color: rgb(var(--state-active-fg)) !important;
+  box-shadow: inset 0 0 0 2px rgb(var(--side-indicator)) !important;
+  font-weight: 600;
 }
 .app-sidebar .nav-item.active svg { color: #ffffff; }
 .app-sidebar .nav-item.active::before { display: none !important; }

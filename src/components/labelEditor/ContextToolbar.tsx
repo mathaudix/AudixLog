@@ -39,10 +39,10 @@ export function ContextToolbar({ elements, onUpdate, onDuplicate, onRemove, onLa
       role="toolbar"
       aria-label={t('labels.toolbar.barra_contexto')}
       onMouseDown={event => event.stopPropagation()}
-      className="pointer-events-auto flex h-10 items-center gap-0.5 rounded-[10px] border border-[rgba(96,165,250,0.14)] bg-[#0B1730] px-2 shadow-[0_8px_24px_rgba(0,0,0,.35)]"
+      className="pointer-events-auto flex h-10 items-center gap-0.5 rounded-[10px] border border-[rgba(96,165,250,0.14)] bg-dock-bg px-2 shadow-[0_8px_24px_rgba(0,0,0,.35)]"
     >
       {elements.length > 1 && (
-        <span data-testid="toolbar-count" className="px-2 text-xs font-medium text-[#60A5FA]">{t('labels.toolbar.itens_selecionados', { n: elements.length })}</span>
+        <span data-testid="toolbar-count" className="px-2 text-xs font-medium text-primary">{t('labels.toolbar.itens_selecionados', { n: elements.length })}</span>
       )}
 
       {text && (
@@ -51,10 +51,10 @@ export function ContextToolbar({ elements, onUpdate, onDuplicate, onRemove, onLa
           <span data-testid="toolbar-font-size" className="min-w-8 text-center text-xs tabular-nums text-[#CBD5E1]">{text.fontSize}</span>
           <button type="button" data-testid="toolbar-font-plus" title={t('labels.toolbar.aumentar_fonte')} aria-label={t('labels.toolbar.aumentar_fonte')} className={btn} onClick={() => onUpdate({ fontSize: Math.min(120, text.fontSize + 1) } as CanvasElementPatch)}><Plus size={16} /></button>
           <span className={sep} />
-          <button type="button" data-testid="toolbar-bold" title={t('labels.toolbar.negrito')} aria-label={t('labels.toolbar.negrito')} aria-pressed={text.fontWeight === 'bold'} className={`${btn} ${text.fontWeight === 'bold' ? 'text-[#60A5FA]' : ''}`} onClick={() => onUpdate({ fontWeight: text.fontWeight === 'bold' ? 'normal' : 'bold' } as CanvasElementPatch)}><Bold size={16} /></button>
-          <button type="button" title={t('labels.toolbar.alinhar_esquerda')} aria-label={t('labels.toolbar.alinhar_esquerda')} className={`${btn} ${text.textAlign === 'left' ? 'text-[#60A5FA]' : ''}`} onClick={() => onUpdate({ textAlign: 'left' } as CanvasElementPatch)}><AlignLeft size={16} /></button>
-          <button type="button" title={t('labels.toolbar.alinhar_centro')} aria-label={t('labels.toolbar.alinhar_centro')} className={`${btn} ${text.textAlign === 'center' ? 'text-[#60A5FA]' : ''}`} onClick={() => onUpdate({ textAlign: 'center' } as CanvasElementPatch)}><AlignCenter size={16} /></button>
-          <button type="button" title={t('labels.toolbar.alinhar_direita')} aria-label={t('labels.toolbar.alinhar_direita')} className={`${btn} ${text.textAlign === 'right' ? 'text-[#60A5FA]' : ''}`} onClick={() => onUpdate({ textAlign: 'right' } as CanvasElementPatch)}><AlignRight size={16} /></button>
+          <button type="button" data-testid="toolbar-bold" title={t('labels.toolbar.negrito')} aria-label={t('labels.toolbar.negrito')} aria-pressed={text.fontWeight === 'bold'} className={`${btn} ${text.fontWeight === 'bold' ? 'text-primary' : ''}`} onClick={() => onUpdate({ fontWeight: text.fontWeight === 'bold' ? 'normal' : 'bold' } as CanvasElementPatch)}><Bold size={16} /></button>
+          <button type="button" title={t('labels.toolbar.alinhar_esquerda')} aria-label={t('labels.toolbar.alinhar_esquerda')} className={`${btn} ${text.textAlign === 'left' ? 'text-primary' : ''}`} onClick={() => onUpdate({ textAlign: 'left' } as CanvasElementPatch)}><AlignLeft size={16} /></button>
+          <button type="button" title={t('labels.toolbar.alinhar_centro')} aria-label={t('labels.toolbar.alinhar_centro')} className={`${btn} ${text.textAlign === 'center' ? 'text-primary' : ''}`} onClick={() => onUpdate({ textAlign: 'center' } as CanvasElementPatch)}><AlignCenter size={16} /></button>
+          <button type="button" title={t('labels.toolbar.alinhar_direita')} aria-label={t('labels.toolbar.alinhar_direita')} className={`${btn} ${text.textAlign === 'right' ? 'text-primary' : ''}`} onClick={() => onUpdate({ textAlign: 'right' } as CanvasElementPatch)}><AlignRight size={16} /></button>
           <span className={sep} />
           <label title={t('labels.toolbar.cor_texto')} className="grid h-8 w-8 cursor-pointer place-items-center">
             <span className="sr-only">{t('labels.toolbar.cor_texto')}</span>

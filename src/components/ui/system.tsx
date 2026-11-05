@@ -10,8 +10,8 @@ const TONE_CLASS: Record<Tone, string> = {
   primary: 'bg-primary/10 text-primary border-primary/25',
   info: 'bg-subtle text-brand border-primary/25',
   success: 'bg-success/20 text-brand border-success/40',
-  warning: 'bg-warning/15 text-warning border-warning/30',
-  danger: 'bg-danger/10 text-danger border-danger/30',
+  warning: 'bg-warning/15 text-status-warning border-warning/30',
+  danger: 'bg-danger/10 text-status-danger border-danger/30',
 };
 
 /** Badge / StatusPill: estados das NF-e, destinos do rateio, avisos. */

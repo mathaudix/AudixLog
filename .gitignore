@@ -7,3 +7,12 @@ harness/dist-*/
 !.env.example
 *.log
 tmp/
+audit-*.json
+*.audit.png
+harness/dist/
+tmp_*.txt
+*.zip
+
+*.tsbuildinfo
+
+*.tsbuildinfo

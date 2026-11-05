@@ -1,9 +1,9 @@
 // Fundo das telas de acesso: ilustração própria em SVG (galpão com docas, caminhão, pallets e rota de filiais).
 // Sem imagens externas. A animação respeita prefers-reduced-motion (ver styles no index.css).
 export function AuthBackdrop() {
-  return <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 overflow-hidden bg-gradient-to-b from-[#050B1A] via-[#0A1A3A] to-[#0F2A5C]">
+  return <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-0 overflow-hidden bg-gradient-to-b from-backdrop-a via-backdrop-b to-backdrop-c">
     <svg className="absolute inset-x-0 bottom-0 h-[55%] w-full opacity-40" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="330" width="1200" height="70" fill="#0A1A3A"/>
+      <rect x="0" y="330" width="1200" height="70" style={{ fill: "rgb(var(--backdrop-b))" }}/>
       <path d="M0 365 H1200" stroke="#3B82F6" strokeWidth="3" strokeDasharray="28 18" opacity=".6"/>
       <g fill="#1E3A6E"><rect x="60" y="150" width="260" height="180"/><rect x="330" y="120" width="340" height="210"/><rect x="680" y="170" width="200" height="160"/><rect x="890" y="200" width="260" height="130"/></g>
       <g fill="#2B4F8F">{[0, 1, 2, 3].map(i => <rect key={i} x={90 + i * 60} y="220" width="44" height="110"/>)}{[0, 1, 2].map(i => <rect key={`b${i}`} x={370 + i * 100} y="190" width="70" height="140"/>)}</g>

@@ -1,6 +1,7 @@
 import { useI18n } from './../../i18n/I18nProvider';
 import { Button } from '../ui/Button';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Scale, AlarmClock, AlertTriangle, Check, ChevronDown, Clock3, Copy, PackageCheck, Pencil, Printer, Trash2, Truck, Undo2 } from 'lucide-react';
 import type { NotaFiscal, StatusConferencia } from '../../types';
 import { formatCurrency, formatDateDisplay } from '../../utils/format';
@@ -19,6 +20,9 @@ interface Props {
 }
 function StatusControl({ nf, onStatus }: { nf: NotaFiscal; onStatus: Props['onStatus'] }) {
   const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const status = nf.statusConferencia;
   const style = getStatusStyle(status);
   const options = [
@@ -28,7 +32,39 @@ function StatusControl({ nf, onStatus }: { nf: NotaFiscal; onStatus: Props['onSt
   ];
   const current = options.find(option => option.value === status) ?? { value: 'pendente' as const, label: style.label, Icon: Clock3, color: 'text-warning' };
   const Icon = current.Icon;
-  return <div className="relative inline-flex"><Tooltip content={style.label}><Button type="button" variant="soft" size="sm" iconOnly className={`h-8 w-8 rounded-[10px] border-0 bg-transparent shadow-none hover:bg-surface-2 ${getStatusIconTone(status)}`} aria-label={`Status ${style.label}. Alterar status da NF ${nf.numero}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(value => !value)}><Icon size={17} strokeWidth={2.2}/></Button></Tooltip>{open && <div role="menu" aria-label={`Alterar status da NF ${nf.numero}`} className="absolute left-0 top-full z-30 mt-1 min-w-36 rounded-xl border border-border bg-surface p-1 shadow-lg">{options.map(({ value, label, Icon: OptionIcon, color }) => <button key={value} type="button" role="menuitemradio" aria-checked={status === value} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-fg hover:bg-surface-2" onClick={() => { onStatus(nf.id, value); setOpen(false); }}><OptionIcon size={16} className={color}/><span>{label}</span></button>)}</div>}</div>;
+  useLayoutEffect(() => {
+    if (!open) { setPos(null); return; }
+    const place = () => {
+      const r = wrapperRef.current?.getBoundingClientRect();
+      if (!r) return;
+      const menuH = menuRef.current?.offsetHeight ?? 150;
+      const menuW = menuRef.current?.offsetWidth ?? 160;
+      const below = r.bottom + 4;
+      const top = below + menuH > window.innerHeight && r.top - 4 - menuH > 0 ? r.top - 4 - menuH : below;
+      const left = Math.min(Math.max(8, r.left), window.innerWidth - menuW - 8);
+      setPos({ top, left });
+    };
+    place();
+    const onDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (!wrapperRef.current?.contains(target) && !menuRef.current?.contains(target)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { setOpen(false); wrapperRef.current?.querySelector('button')?.focus(); }
+    };
+    const onClose = () => setOpen(false);
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('scroll', onClose, true);
+    window.addEventListener('resize', onClose);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('scroll', onClose, true);
+      window.removeEventListener('resize', onClose);
+    };
+  }, [open]);
+  return <div ref={wrapperRef} className="relative inline-flex"><Tooltip content={style.label}><Button type="button" variant="soft" size="sm" iconOnly className={`h-8 w-8 rounded-[10px] border-0 bg-transparent shadow-none hover:bg-surface-2 ${getStatusIconTone(status)}`} aria-label={`Status ${style.label}. Alterar status da NF ${nf.numero}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(value => !value)}><Icon size={17} strokeWidth={2.2}/></Button></Tooltip>{open && createPortal(<div ref={menuRef} role="menu" aria-label={`Alterar status da NF ${nf.numero}`} style={{ position: 'fixed', top: pos?.top ?? 0, left: pos?.left ?? 0, zIndex: 60, visibility: pos ? 'visible' : 'hidden' }} className="min-w-36 rounded-xl border border-border bg-surface p-1 shadow-lg">{options.map(({ value, label, Icon: OptionIcon, color }) => <button key={value} type="button" role="menuitemradio" aria-checked={status === value} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-fg hover:bg-surface-2" onClick={() => { onStatus(nf.id, value); setOpen(false); }}><OptionIcon size={16} className={color}/><span>{label}</span></button>)}</div>, document.body)}</div>;
 }
 function Row({ allowDelete, nf, selected, reveal = false, onSelect, onStatus, onEdit, onDelete, onDispatch, onUndo, onPrint, stale, staleHours = 0, divergent = false, divergenceTitle }: Props) {
  const { t } = useI18n();

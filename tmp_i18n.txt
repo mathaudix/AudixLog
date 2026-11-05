@@ -1,1 +1,0 @@
-i18n keys: 525 chaves usadas verificadas em pt e en, OK

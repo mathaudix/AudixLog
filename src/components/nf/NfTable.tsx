@@ -8,6 +8,7 @@ import type { StaleInfo } from '../../utils/staleness';
 import './nf-table.css';
 import './nf-table-fit.css';
 import './nf-table-header.css';
+import './nf-table-spacing.css';
 interface Props { hasFilters?: boolean; onClearFilters?: () => void; revealId?: string | null; allowDelete: boolean; nfs: NotaFiscal[]; selected: string[]; loading?: boolean; onSelect: (id: string) => void; onSelectAll: (ids: string[]) => void; onStatus: (id: string, status: StatusConferencia) => void; onEdit: (nf: NotaFiscal) => void; onDelete: (nf: NotaFiscal) => void; onDispatch: (nf: NotaFiscal) => void; onUndo: (nf: NotaFiscal) => void; onPrint: (nf: NotaFiscal) => void; sort: SortConfig; onSort: (key: keyof NotaFiscal) => void; staleById?: Map<string, StaleInfo>; divergentById?: Map<string, string>; staleHours?: number }
 export function NfTable(props: Props) {
  const { t } = useI18n();

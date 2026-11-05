@@ -1,7 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import '../src/styles/tokens.css';
 import '../src/styles.css';
 import '../src/redesign.css';
+import '../src/styles/sidebar.css';
+import '../src/styles/controls.css';
+import '../src/styles/states.css';
 import { I18nProvider } from '../src/i18n/I18nProvider';
 import { ToastProvider } from '../src/hooks/useToast';
 import RateioCteTab from '../src/features/rateio/RateioCteTab';

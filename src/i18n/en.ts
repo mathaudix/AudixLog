@@ -354,6 +354,7 @@ export const en: Dict = {
       'forkliftHere': 'Forklift here',
       'tieDown': 'Tie down here',
       'temperatureLimit': 'Temperature limit',
+      'handleCare': 'Handle with care',
       'truckBox': 'Box truck',
       'truckTrailer': 'Semi-trailer',
       'van': 'Van',
