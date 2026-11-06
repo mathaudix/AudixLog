@@ -4,7 +4,7 @@ import { build } from 'esbuild';
 
 const root = new URL('../', import.meta.url);
 const bundle = await build({
-  stdin: { contents: "export { accessState } from './src/services/accessState.ts'; export { authErrorKey } from './src/services/authErrors.ts';", resolveDir: root.pathname, loader: 'ts' },
+  stdin: { contents: "export { accessState } from './src/services/accessState.ts'; export { authErrorKey } from './src/services/authErrors.ts';", resolveDir: process.cwd(), loader: 'ts' },
   bundle: true, format: 'esm', platform: 'neutral', write: false,
 });
 const code = bundle.outputFiles[0].text;

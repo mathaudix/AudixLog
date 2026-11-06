@@ -3,7 +3,7 @@ import { build } from 'esbuild';
 
 const root = new URL('../', import.meta.url);
 const bundle = await build({
-  stdin: { contents: "export { toNfUpdatePayload } from './src/services/nfPayload.ts';", resolveDir: root.pathname, loader: 'ts' },
+  stdin: { contents: "export { toNfUpdatePayload } from './src/services/nfPayload.ts';", resolveDir: process.cwd(), loader: 'ts' },
   bundle: true, format: 'esm', platform: 'neutral', write: false,
 });
 const dataUrl = `data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].text).toString('base64')}`;
