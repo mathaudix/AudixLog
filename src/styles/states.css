@@ -1,0 +1,134 @@
+/* Padrão único de estado de seleção (abas, segmentos, filtros, chips, botões soft, linhas, foco).
+   Tokens em tokens.css (--state-*). Importado por último em main.tsx para vencer redesign.css.
+   Ativo = fundo primário sólido + texto branco. Inativo = texto secundário sem fundo.
+   Hover = fundo sutil. Sem opacity em texto. */
+
+/* Abas segmentadas (Tabs variant="segmented", seletor Estoque/Expedidas e filtros) */
+.segmented-tabs,
+[role=tablist].inline-flex {
+  border-color: rgb(var(--state-border)) !important;
+}
+.segmented-tabs button,
+[role=tablist].inline-flex > [role=tab] {
+  color: rgb(var(--state-inactive-fg)) !important;
+  background: transparent !important;
+  font-weight: 600;
+  box-shadow: none !important;
+}
+.segmented-tabs button:hover:not([aria-pressed=true]):not(.active),
+[role=tablist].inline-flex > [role=tab]:hover:not([aria-selected=true]) {
+  background: rgb(var(--state-hover-bg)) !important;
+  color: rgb(var(--color-fg)) !important;
+}
+.segmented-tabs button[aria-pressed=true],
+.segmented-tabs button.active,
+[role=tablist].inline-flex > [role=tab][aria-selected=true] {
+  background: rgb(var(--state-active-bg)) !important;
+  color: rgb(var(--state-active-fg)) !important;
+  font-weight: 600;
+  box-shadow: none !important;
+}
+
+/* Abas sublinhadas (variant="underline"): indicador de 2px primário */
+[role=tablist]:not(.inline-flex) > [role=tab][aria-selected=true] {
+  border-bottom-color: rgb(var(--state-indicator)) !important;
+  color: rgb(var(--color-fg)) !important;
+  font-weight: 600;
+}
+
+/* Botão soft: repouso sutil, ativo sólido */
+.btn-soft {
+  background: rgb(var(--state-hover-bg));
+  color: rgb(var(--color-primary));
+}
+.btn-soft[aria-pressed=true],
+.btn-soft.active {
+  background: rgb(var(--state-active-bg));
+  color: rgb(var(--state-active-fg));
+  font-weight: 600;
+}
+
+/* Linha selecionada de tabela: fundo de estado + barra lateral de 3px */
+tr[aria-selected=true],
+tr[data-selected=true],
+tr.is-selected,
+tr.selected {
+  background: rgb(var(--state-hover-bg)) !important;
+  box-shadow: inset 3px 0 0 rgb(var(--state-indicator));
+}
+
+/* Checkbox e toggle marcados: cor de estado (>= 3:1 contra o fundo) */
+input[type=checkbox],
+input[type=radio] {
+  accent-color: rgb(var(--state-active-bg));
+}
+
+/* Badges de filial no claro: texto escurecido do mesmo matiz (>= 4.5:1 sobre o fundo claro) */
+:root:not(.dark) .nf-branch-badge.branch-chip {
+  color: color-mix(in srgb, var(--chip) 55%, rgb(var(--label-ink))) !important;
+}
+
+/* Aviso inline de NF no claro: texto do tom âmbar escuro */
+:root:not(.dark) .nf-inline-warning {
+  color: rgb(120 53 15) !important;
+}
+
+/* Foco visível 2px nos dois temas */
+:focus-visible {
+  outline: 2px solid rgb(var(--focus-ring));
+  outline-offset: 2px;
+}
+
+/* Conteúdo da etiqueta: papel branco e tinta preta, independente do tema. */
+.label-canvas,
+.label-canvas * {
+  color: rgb(var(--label-ink));
+}
+.label-canvas svg text,
+.label-canvas svg g {
+  fill: rgb(var(--label-ink)) !important;
+}
+
+/* Desabilitado: sem opacity em texto; texto muted sobre raised (>= 4.5:1). */
+button:disabled,
+[role=button][aria-disabled=true] {
+  color: rgb(var(--color-muted)) !important;
+  background: rgb(var(--color-raised)) !important;
+  border-color: rgb(var(--color-border)) !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+
+/* Dock do editor: ativo = primary-strong + branco; inativo = fg sem fundo. */
+.editor-redesign nav button.bg-primary-strong {
+  background: rgb(var(--color-primary-strong)) !important;
+  color: rgb(var(--label-paper)) !important;
+}
+.editor-redesign nav button:not(.bg-primary-strong) {
+  background: transparent;
+  color: rgb(var(--dock-fg));
+}
+.editor-redesign nav button span,
+.editor-redesign nav button svg {
+  color: inherit;
+}
+
+/* Botões do cabeçalho e setas do editor: cor de texto explícita por token (não herdar buttontext do color-scheme). */
+.editor-redesign header button:not(:disabled):not(.bg-primary-strong):not(.bg-blue-600):not(.bg-primary):not([class*="bg-["]),
+.editor-redesign header button:not(:disabled):not(.bg-primary-strong):not(.bg-blue-600):not(.bg-primary):not([class*="bg-["]) span,
+.editor-redesign header button:not(:disabled):not(.bg-primary-strong):not(.bg-blue-600):not(.bg-primary):not([class*="bg-["]) svg {
+  color: rgb(var(--color-fg));
+}
+.editor-redesign header button.bg-blue-600,
+.editor-redesign header button.bg-primary,
+.editor-redesign header button.bg-primary-strong,
+.editor-redesign header button[class*="bg-["],
+.editor-redesign header button.bg-primary {
+  color: rgb(var(--label-paper)) !important;
+}
+.editor-redesign header button:disabled {
+  color: rgb(var(--color-muted)) !important;
+}
+.editor-redesign section button:not(:disabled):not(.bg-primary-strong) {
+  color: rgb(var(--color-fg));
+}

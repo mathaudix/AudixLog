@@ -1,0 +1,58 @@
+import { useEffect, useMemo, useState } from 'react';
+import { LABEL_DIMENSIONS } from './constants';
+import { CanvasElementView } from './CanvasElementView';
+import type { CanvasElement, LabelFormat, LabelNfContext } from './types';
+import { elementBounds, logoHeaderHeight, type ResizeHandle } from './geometry';
+import { boxOf, rotationOf } from './snapGuides';
+import logoMarkBlack from '../../assets/logo/logo-mark-black.svg?raw';
+interface Props {
+ format: LabelFormat; elements: CanvasElement[]; zoom: number; selectedIds: string[];
+ guides: { axis: 'x' | 'y'; position: number }[]; onSelect: (id: string | null) => void; onSelectMany: (ids: string[], additive: boolean) => void;
+ onPointerDown: (event: React.PointerEvent<HTMLElement>, element: CanvasElement, mode: 'drag' | 'resize' | 'rotate', handle?: ResizeHandle) => void;
+ onPointerMove: (event: React.PointerEvent<HTMLElement>) => void; onPointerUp: () => void; onDoubleSelect: (id: string) => boolean;
+ onEdit: (element: CanvasElement, text: string) => void;
+ onMove: (ids: string[], dx: number, dy: number) => void;
+ nf?: LabelNfContext; volume?: number; total?: number;
+}
+export function LabelCanvas({ format, elements, zoom, selectedIds, guides, onSelect, onSelectMany, onPointerDown, onPointerMove, onPointerUp, onEdit, onMove, nf, volume, total, onDoubleSelect }: Props) {
+ const [marquee, setMarquee] = useState<{x:number;y:number;w:number;h:number}|null>(null); const [origin,setOrigin]=useState<{x:number;y:number;additive:boolean}|null>(null);
+ const size = LABEL_DIMENSIONS[format]; const scale = zoom / 100;
+ const logoArea = logoHeaderHeight(size.height); const logoSize = logoArea - 4;
+ const logoImage = `data:image/svg+xml,${encodeURIComponent(logoMarkBlack)}`;
+ const ordered = useMemo(() => [...elements].sort((a, b) => a.zIndex - b.zIndex), [elements]);
+
+ // Navegação por teclado: mover elementos selecionados com setas
+ useEffect(() => {
+   if (!selectedIds.length) return;
+   const onKey = (event: KeyboardEvent) => {
+     if (['input', 'textarea', 'select'].includes((event.target as HTMLElement)?.tagName.toLowerCase() ?? '')) return;
+     const step = event.shiftKey ? 10 : 1; // Shift = passo maior (10mm)
+     let dx = 0, dy = 0;
+     switch (event.key) {
+       case 'ArrowLeft': dx = -step; break;
+       case 'ArrowRight': dx = step; break;
+       case 'ArrowUp': dy = -step; break;
+       case 'ArrowDown': dy = step; break;
+       default: return;
+     }
+     event.preventDefault();
+     onMove(selectedIds, dx, dy);
+   };
+   window.addEventListener('keydown', onKey);
+   return () => window.removeEventListener('keydown', onKey);
+ }, [selectedIds, onMove]);
+
+ return <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-auto bg-canvas-bg p-8" style={{ backgroundImage: 'radial-gradient(circle,rgba(96,165,250,.16) .7px,transparent .8px)', backgroundSize: '16px 16px' }}>
+  <div className="pointer-events-none absolute left-1/2 top-3 z-[5] -translate-x-1/2 rounded-sm border border-dashed border-amber-400/60 bg-dock-bg px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-300">{Math.round(size.width / 3.78)} x {Math.round(size.height / 3.78)} mm{size.width === LABEL_DIMENSIONS['100x30 (2Col)'].width ? ' · 2 colunas' : ''}</div>
+  <div className="label-canvas relative m-auto shrink-0 overflow-hidden rounded-[3px] border-2 border-zinc-700 bg-white shadow-[0_12px_40px_rgba(0,0,0,.18)] dark:border-zinc-300" style={{ width: size.width * scale, height: size.height * scale, touchAction:'none' }} onPointerDown={event => { if (event.target !== event.currentTarget) return; try { event.currentTarget.setPointerCapture(event.pointerId); } catch { /* Pointer capture may be unavailable in tests. */ } const rect=event.currentTarget.getBoundingClientRect(); setOrigin({x:(event.clientX-rect.left)/scale,y:(event.clientY-rect.top)/scale,additive:event.shiftKey||event.ctrlKey||event.metaKey}); setMarquee({x:(event.clientX-rect.left)/scale,y:(event.clientY-rect.top)/scale,w:0,h:0}); try{event.currentTarget.setPointerCapture(event.pointerId);}catch{/* capture optional */} }} onPointerMove={event=>{if(!origin)return;const rect=event.currentTarget.getBoundingClientRect(),x=(event.clientX-rect.left)/scale,y=(event.clientY-rect.top)/scale;setMarquee({x:Math.min(origin.x,x),y:Math.min(origin.y,y),w:Math.abs(x-origin.x),h:Math.abs(y-origin.y)});}} onPointerUp={event=>{if(!origin||!marquee)return;const ids=elements.filter(item=>{const b=elementBounds(item),l=Math.min(origin.x,(event.clientX-event.currentTarget.getBoundingClientRect().left)/scale),t=Math.min(origin.y,(event.clientY-event.currentTarget.getBoundingClientRect().top)/scale),r=Math.max(origin.x,(event.clientX-event.currentTarget.getBoundingClientRect().left)/scale),bt=Math.max(origin.y,(event.clientY-event.currentTarget.getBoundingClientRect().top)/scale);return !item.hidden&&!item.locked&&item.x<=r&&item.x+b.width>=l&&item.y<=bt&&item.y+b.height>=t;}).map(item=>item.id);onSelectMany(ids,origin.additive);setOrigin(null);setMarquee(null);}}>
+   <div className="absolute inset-0 overflow-hidden rounded-[3px]" style={{ width: size.width * scale, height: size.height * scale }}>
+    <div aria-hidden="true" className="pointer-events-none absolute left-0 top-0 z-[120] flex w-full items-center justify-center" style={{ height: logoArea * scale }}><img src={logoImage} alt="" className="max-w-[60%] object-contain" style={{ width: logoSize * scale, height: logoSize * scale }}/><span className="absolute inset-x-0 bottom-0 border-b border-dashed border-zinc-400/70"/></div>
+    {ordered.filter(element => !element.hidden).map(element => { return <CanvasElementView key={element.id} element={element} scale={scale} selected={selectedIds.includes(element.id)} onSelect={event => { if(event.shiftKey||event.ctrlKey||event.metaKey) onSelectMany([element.id],true); else onSelect(element.id); }} onDoubleSelect={() => onDoubleSelect(element.id)} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onEdit={onEdit} nf={nf} volume={volume} total={total} />; })}
+    {elements.filter(item => rotationOf(item) !== 0 && !item.hidden).map(item => { const b = boxOf(item); const out = b.x < -0.01 || b.y < -0.01 || b.x + b.width > size.width + 0.01 || b.y + b.height > size.height + 0.01; return out ? <div key={`oob-${item.id}`} data-out-of-bounds="true" className="pointer-events-none absolute z-[96] border border-dashed border-red-500" style={{ left: b.x * scale, top: b.y * scale, width: b.width * scale, height: b.height * scale }} /> : null; })}
+    {selectedIds.length>1 && (()=>{const group=elements.filter(item=>selectedIds.includes(item.id));if(!group.length)return null;const bounds=group.map(item=>({item,b:elementBounds(item)}));const left=Math.min(...bounds.map(x=>x.item.x)),top=Math.min(...bounds.map(x=>x.item.y)),right=Math.max(...bounds.map(x=>x.item.x+x.b.width)),bottom=Math.max(...bounds.map(x=>x.item.y+x.b.height));return <div className="pointer-events-none absolute z-[95] border border-emerald-500" style={{left:left*scale,top:top*scale,width:(right-left)*scale,height:(bottom-top)*scale}}/>;})()}
+    {marquee && <div className="pointer-events-none absolute z-[110] border border-dashed border-blue-600 bg-blue-500/10" style={{left:marquee.x*scale,top:marquee.y*scale,width:marquee.w*scale,height:marquee.h*scale}}/>}
+    {guides.map((guide, index) => <div key={`${guide.axis}-${index}`} className="pointer-events-none absolute z-[100] bg-pink-500/80" style={guide.axis === 'x' ? { left: guide.position * scale, top: 0, width: 1, height: size.height * scale } : { top: guide.position * scale, left: 0, height: 1, width: size.width * scale }} />)}
+   </div>
+  </div>
+ </div>;
+}

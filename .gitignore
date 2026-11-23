@@ -1,0 +1,14 @@
+node_modules/
+dist/
+harness/dist-*/
+.firebase/
+.env
+.env.*
+!.env.example
+*.log
+tmp/
+audit-*.json
+*.audit.png
+harness/dist/
+tmp_*.txt
+*.zip

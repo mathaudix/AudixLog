@@ -1,0 +1,149 @@
+/* DESIGN TOKENS — fonte única de cor, raio e sombra do AudixLog.
+   Paleta Clean/Minimal: #2A3F38 (verde navy), #8DF688 (verde claro), #562F54 (roxo), #57585D (cinza), #F650BD (rosa)
+   Valores em RGB (canais separados) para permitir rgb(var(--x) / alpha) no Tailwind. */
+
+:root {
+  color-scheme: light;
+  /* Fonte do wordmark AudixLog (só no login). Kaushan Script 400, OFL, self-hosted. */
+  --font-brand: "Kaushan Script", cursive;
+
+  /* Paleta oficial Clean/Minimal */
+  --color-brand-audix: 42 63 56;      /* #2A3F38 - verde navy escuro */
+  --color-brand-log: 141 246 136;     /* #8DF688 - verde claro */
+  --color-brand-accent: 86 47 84;     /* #562F54 - roxo/magenta */
+  --color-brand-muted: 87 88 93;      /* #57585D - cinza */
+  --color-brand-pink: 246 80 189;     /* #F650BD - rosa */
+
+  /* Sobre fundo escuro (login) */
+  --color-brand-on-dark: 255 255 255;
+  --color-brand-green-on-dark: 141 246 136;
+
+  /* Gradientes do login */
+  --color-hero: 42 63 56;             /* #2A3F38 painel de marca do login (claro) */
+  --dock-bg: 30 45 40;                /* dock e barras do editor */
+  --canvas-bg: 20 30 25;              /* área de trabalho do editor */
+  --backdrop-a: 42 63 56;             /* gradiente do login */
+  --backdrop-b: 35 52 45;
+  --backdrop-c: 28 42 36;
+
+  /* Cores base do app - fundo muito branco, estilo Linear/Notion */
+  --color-bg: 255 255 255;            /* branco puro */
+  --color-surface: 250 250 250;       /* cards, sidebar, topo - off-white sutil */
+  --color-raised: 255 255 255;        /* hover/elevado */
+  --color-border: 230 230 235;        /* borda 1px, neutra clara */
+  --color-fg: 42 63 56;               /* #2A3F38 texto principal */
+  --color-muted: 120 120 125;         /* texto secundário */
+  --color-tertiary: 160 160 165;      /* texto auxiliar */
+
+  /* Cores semânticas - usando a nova paleta */
+  --color-brand: 42 63 56;            /* #2A3F38 sidebar, títulos de marca */
+  --color-primary: 42 63 56;          /* #2A3F38 ações, links, foco */
+  --color-primary-strong: 42 63 56;   /* fundo de botão primário */
+  --color-subtle: 225 245 228;        /* seleção, badges info - verde claro suave */
+  --label-ink: 0 0 0;                 /* tinta da etiqueta impressa (fixa) */
+  --label-paper: 255 255 255;         /* papel da etiqueta (fixo) */
+  --dock-fg: 255 255 255;             /* texto da dock do editor */
+
+  /* Estados semânticos */
+  --color-success: 42 63 56;          /* #2A3F38 - verde navy para sucesso */
+  --color-warning: 200 150 30;        /* âmbar suave */
+  --color-danger: 220 38 38;          /* vermelho, só semântico/destrutivo */
+  --status-danger-fg: 185 28 28;
+  --status-warning-fg: 146 64 14;
+  --color-info: 86 47 84;             /* #562F54 - roxo para info */
+
+  /* Estados de seleção (abas, segmentos, filtros, chips, botões soft) */
+  --state-active-bg: 42 63 56;        /* #2A3F38 */
+  --state-active-fg: 255 255 255;
+  --state-hover-bg: 245 250 246;      /* hover sutil */
+  --state-inactive-fg: 120 120 125;
+  --state-border: 200 200 205;
+  --state-indicator: 42 63 56;
+  --focus-ring: 42 63 56;
+
+  /* Sombras sutis estilo Linear/Notion */
+  --surface-shadow: 0 1px 2px rgb(42 63 56 / .04), 0 1px 3px rgb(42 63 56 / .03);
+  --popover-shadow: 0 12px 32px rgb(42 63 56 / .08), 0 4px 12px rgb(42 63 56 / .05);
+
+  /* Gráficos */
+  --chart-grid: #E5E7EB;
+  --chart-muted: #9CA3AF;
+  --chart-track: #E5E7EB;
+  --chart-surface: #ffffff;
+
+  /* Raio */
+  --radius-control: 8px;
+  --radius-card: 12px;
+  --radius-dialog: 16px;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-bg: 18 18 18;               /* preto suave */
+  --color-surface: 24 24 24;          /* cards */
+  --color-raised: 32 32 32;           /* hover/elevado */
+  --color-border: 50 50 55;           /* borda */
+  --color-hero: 18 18 18;             /* painel de marca do login */
+  --dock-bg: 18 18 18;
+  --canvas-bg: 18 18 18;
+  --backdrop-a: 18 18 18;
+  --backdrop-b: 24 24 24;
+  --backdrop-c: 32 32 32;
+  --color-fg: 250 250 250;
+  --color-muted: 160 160 165;
+  --color-tertiary: 120 120 125;
+  --color-brand: 141 246 136;         /* #8DF688 no dark */
+  --color-primary: 141 246 136;       /* #8DF688 no dark */
+  --color-primary-strong: 42 63 56;   /* botão continua navy com texto branco */
+  --color-subtle: 42 63 56;           /* seleção */
+  --color-success: 141 246 136;
+  --color-warning: 251 191 36;
+  --color-danger: 248 113 113;
+  --status-danger-fg: 252 165 165;
+  --status-warning-fg: 252 211 77;
+  --color-info: 246 80 189;           /* #F650BD no dark */
+  --state-active-bg: 141 246 136;
+  --state-active-fg: 18 18 18;
+  --state-hover-bg: 32 32 32;
+  --state-inactive-fg: 160 160 165;
+  --state-border: 60 60 65;
+  --state-indicator: 141 246 136;
+  --focus-ring: 141 246 136;
+  --surface-shadow: 0 1px 2px rgb(0 0 0 / .25);
+  --popover-shadow: 0 12px 32px rgb(0 0 0 / .35), 0 4px 12px rgb(0 0 0 / .25);
+  --chart-grid: #374151;
+  --chart-muted: #9CA3AF;
+  --chart-track: #374151;
+  --chart-surface: #181818;
+}
+
+/* Sidebar: verde navy no claro, preto no escuro com borda sutil */
+:root {
+  --side-bg: 42 63 56;                /* #2A3F38 */
+  --side-border: 60 85 75;
+  --side-fg: 245 255 247;
+  --side-muted: 180 220 190;
+  --side-hover: 255 255 255;
+  --side-active: 141 246 136;         /* #8DF688 ativo */
+  --side-indicator: 141 246 136;
+}
+.dark {
+  --side-bg: 18 18 18;
+  --side-border: 50 50 55;
+}
+
+/* Status no gráfico (donut) */
+:root { --chart-pending: #D97706; --chart-ok: #2A3F38; }
+.dark { --chart-pending: #D97706; --chart-ok: #8DF688; }
+
+/* Series do gráfico e badges de filial */
+:root {
+  --series-0: #2A3F38; --series-1: #8DF688; --series-2: #562F54; --series-3: #57585D; --series-4: #F650BD;
+  --series-5: #BE185D; --series-6: #0891B2; --series-7: #65A30D; --series-8: #B45309; --series-9: #334155;
+  --series-10: #DB2777; --series-11: #0D9488;
+}
+.dark {
+  --series-0: #8DF688; --series-1: #A5F3FC; --series-2: #F650BD; --series-3: #9CA3AF; --series-4: #F472B6;
+  --series-5: #F9A8D4; --series-6: #67E8F9; --series-7: #BEF264; --series-8: #FCD34D; --series-9: #CBD5E1;
+  --series-10: #F472B6; --series-11: #5EEAD4;
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<style>
+@import "@fontsource/sora/latin-700.css";
+@import "@fontsource/yellowtail/latin-400.css";
+@import "@fontsource/damion/latin-400.css";
+@import "@fontsource/kaushan-script/latin-400.css";
+@import "@fontsource/pacifico/latin-400.css";
+@import "@fontsource/leckerli-one/latin-400.css";
+@import "@fontsource/satisfy/latin-400.css";
+body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #fff; }
+.row { display: grid; grid-template-columns: 220px 1fr 1fr; align-items: center; gap: 16px; padding: 14px 20px; }
+.lbl { font-size: 13px; color: #334155; }
+.cell { display: flex; align-items: center; justify-content: center; min-height: 110px; }
+.navy { background: #0B1F3A; }
+.wm { font-size: 72px; line-height: 1.25; padding: 0 12px; white-space: nowrap; }
+.wm .a { color: #fff; } .wm .l { color: #22C55E; }
+.wm-l .a { color: #082F49; } .wm-l .l { color: #0E7490; }
+</style>
+</head>
+<body>
+<div id="grid"></div>
+<script>
+const fonts = [
+  ['Sora 700 (atual, referência)', 'Sora', 700],
+  ['Yellowtail', 'Yellowtail', 400],
+  ['Damion', 'Damion', 400],
+  ['Kaushan Script', 'Kaushan Script', 400],
+  ['Pacifico', 'Pacifico', 400],
+  ['Leckerli One', 'Leckerli One', 400],
+  ['Satisfy', 'Satisfy', 400],
+];
+const grid = document.getElementById('grid');
+for (const [label, fam, w] of fonts) {
+  const row = document.createElement('div'); row.className = 'row';
+  row.innerHTML = `<div class="lbl">${label}</div>
+    <div class="cell navy"><span class="wm" style="font-family:'${fam}';font-weight:${w}"><span class="a">Audix</span><span class="l">Log</span></span></div>
+    <div class="cell"><span class="wm wm-l" style="font-family:'${fam}';font-weight:${w}"><span class="a">Audix</span><span class="l">Log</span></span></div>`;
+  grid.appendChild(row);
+}
+</script>
+</body>
+</html>

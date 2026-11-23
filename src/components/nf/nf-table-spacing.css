@@ -1,0 +1,46 @@
+/* Espaçamento da tabela de notas (desktop, a partir de 768px).
+   Mesmo padding horizontal em th e td, alinhamento por coluna, linha mais compacta.
+   Cores, textos e comportamento não mudam. */
+@media (min-width: 768px) {
+  .nf-table { table-layout: fixed; width: 100%; }
+
+  /* Padding horizontal único para cabeçalho e linhas desktop */
+  .nf-table th,
+  .nf-table tr.nf-desktop-row > td {
+    padding-left: 12px;
+    padding-right: 12px;
+    vertical-align: middle;
+  }
+  .nf-table th:first-child,
+  .nf-table tr.nf-desktop-row > td:first-child { padding-left: 14px; }
+  .nf-table th:last-child,
+  .nf-table tr.nf-desktop-row > td:last-child { padding-right: 14px; }
+
+  .nf-table th { height: 40px; }
+  .nf-table tr.nf-desktop-row > td { padding-top: 6px; padding-bottom: 6px; }
+
+  /* Larguras fixas; fornecedor absorve a sobra */
+  .nf-table .col-check { width: 44px; text-align: center; }
+  .nf-table .col-status { width: 88px; text-align: center; }
+  .nf-table .col-data { width: 112px; }
+  .nf-table .col-nf { width: 104px; }
+  .nf-table .col-fornecedor { width: 30%; min-width: 180px; }
+  .nf-table .col-vol { width: 84px; }
+  .nf-table .col-peso { width: 104px; }
+  .nf-table .col-valor { width: 128px; }
+  .nf-table .col-acoes { width: 296px; }
+
+  /* Numéricos à direita, cabeçalho e célula */
+  .nf-table th.text-right,
+  .nf-table tr.nf-desktop-row > td.nf-numeric { text-align: right; }
+  .nf-table th.text-right .nf-sort-button { justify-content: flex-end; }
+  .nf-table tr.nf-desktop-row > td.nf-numeric { font-variant-numeric: tabular-nums; }
+
+  /* Ações: cabeçalho e grupo alinhados à direita */
+  .nf-table th.col-acoes,
+  .nf-table tr.nf-desktop-row > td.col-acoes { text-align: right; }
+  .nf-table tr.nf-desktop-row > td.col-acoes .nf-actions { justify-content: flex-end; margin-left: auto; }
+
+  /* Fornecedor: corte com reticências, sem abrir buraco */
+  .nf-table .col-fornecedor .nf-supplier { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}

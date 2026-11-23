@@ -1,0 +1,37 @@
+/* Sidebar navy (fonte: tokens.css --side-*). Vence as regras antigas de redesign.css e styles.css. */
+.app-sidebar,
+.app-sidebar.is-collapsed {
+  background: rgb(var(--side-bg)) !important;
+  border-right: 1px solid rgb(var(--side-border)) !important;
+  border-color: rgb(var(--side-border)) !important;
+  color: rgb(var(--side-fg));
+  box-shadow: none;
+}
+.app-sidebar .sidebar-brand { border-bottom-color: rgb(var(--side-border)) !important; }
+.app-sidebar .home-logo-button { color: rgb(var(--side-fg)); background: transparent; }
+.app-sidebar .home-logo-button:hover { background: rgb(var(--side-hover) / .08); }
+.app-sidebar .nav-item,
+.app-sidebar .nav-item:focus-visible {
+  background: transparent !important;
+  color: rgb(var(--side-muted)) !important;
+  box-shadow: none !important;
+  border: 0;
+}
+.app-sidebar .nav-item svg { color: rgb(var(--side-muted)); stroke: currentColor; }
+.app-sidebar .nav-item:hover {
+  background: rgb(var(--side-hover) / .08) !important;
+  color: rgb(var(--side-fg)) !important;
+}
+.app-sidebar .nav-item:hover svg { color: rgb(var(--side-fg)); }
+.app-sidebar .nav-item.active,
+.app-sidebar .nav-item.active:hover {
+  background: rgb(var(--state-active-bg)) !important;
+  color: rgb(var(--state-active-fg)) !important;
+  box-shadow: inset 0 0 0 2px rgb(var(--side-indicator)) !important;
+  font-weight: 600;
+}
+.app-sidebar .nav-item.active svg { color: #ffffff; }
+.app-sidebar .nav-item.active::before { display: none !important; }
+.app-sidebar .nav-separator { border-color: rgb(var(--side-border)) !important; background: rgb(var(--side-border)); height: 1px; }
+.app-sidebar .sidebar-settings { border-top: 1px solid rgb(var(--side-border)); padding-top: 8px; }
+.app-sidebar :focus-visible { outline: 2px solid #7DD3FC; outline-offset: 2px; }
